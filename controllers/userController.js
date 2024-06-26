@@ -1,4 +1,5 @@
 const { User } = require('../models'); // 引入User模型
+const { validationResult } = require('express-validator'); // 引入 validationResult 來處理驗證結果
 
 // 獲取所有用戶，支援分頁、篩選和排序
 exports.getAllUsers = async (req, res) => {
@@ -60,6 +61,11 @@ exports.getUserById = async (req, res) => {
 
 // 創建新用戶
 exports.createUser = async (req, res) => {
+  const errors = validationResult(req); // 獲取驗證結果
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() }); // 如果有驗證錯誤，返回 400 狀態碼和錯誤
+  }
+
   try {
     const { username, password, email } = req.body; // 獲取請求體中的數據
     const user = await User.create({ username, password, email }); // 創建新用戶
