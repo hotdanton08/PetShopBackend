@@ -8,10 +8,6 @@ var cors = require('cors'); // 處理跨域資源共享 (CORS) 的中間件
 
 // 引入路由文件
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var productsRouter = require('./routes/products');
-var ordersRouter = require('./routes/orders'); // 新增訂單路由
-var cartsRouter = require('./routes/carts'); // 新增購物車路由
 
 var app = express(); // 創建一個 Express 應用程序
 
@@ -28,10 +24,6 @@ app.use(express.static(path.join(__dirname, 'public'))); // 設置靜態文件�
 
 // 設置路由
 app.use('/', indexRouter); // 根路由
-app.use('/users', usersRouter); // 用戶路由
-app.use('/products', productsRouter); // 產品路由
-app.use('/orders', ordersRouter); // 訂單路由
-app.use('/carts', cartsRouter); // 購物車路由
 
 // 捕獲 404 並轉發到錯誤處理器
 app.use(function(req, res, next) {
