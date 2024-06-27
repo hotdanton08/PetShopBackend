@@ -2,25 +2,43 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert('Orders', [
-      {
-        userId: 1,
-        total: 300.00,
-        status: 'completed',
-        createdAt: new Date(),
-        updatedAt: new Date()
+    await queryInterface.createTable('Orders', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
       },
-      {
-        userId: 2,
-        total: 150.00,
-        status: 'pending',
-        createdAt: new Date(),
-        updatedAt: new Date()
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id'
+        }
+      },
+      total: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false
+      },
+      status: {
+        type: Sequelize.ENUM('pending', 'completed', 'cancelled'),
+        defaultValue: 'pending'
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
       }
-    ], {});
+    });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('Orders', null, {});
+    await queryInterface.dropTable('Orders');
   }
 };
