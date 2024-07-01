@@ -18,7 +18,7 @@ module.exports = {
         }
       },
       total: {
-        type: Sequelize.DECIMAL(10, 2),
+        type: Sequelize.INTEGER,
         allowNull: false
       },
       status: {
