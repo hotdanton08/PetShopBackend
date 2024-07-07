@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.STRING(20)
       },
       password: {
-        type: Sequelize.STRING(12)
+        type: Sequelize.STRING(60) // bcrypt 哈希密碼的輸出長度固定為 60 個字符
       },
       email: {
         type: Sequelize.STRING(50)
