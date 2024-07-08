@@ -20,6 +20,10 @@ module.exports = {
       email: {
         type: Sequelize.STRING(50)
       },
+      role: {
+        type: Sequelize.STRING(20),
+        defaultValue: 'guest'
+      },
       isVerified: {
         type: Sequelize.BOOLEAN
       },

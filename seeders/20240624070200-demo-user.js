@@ -10,6 +10,7 @@ const users = [
     username: 'JohnDoe',
     password: 'password123',
     email: 'johndoe@example.com',
+    role: 'admin',
     isVerified: true,
     createdAt: new Date(),
     updatedAt: new Date()
@@ -18,6 +19,7 @@ const users = [
     username: 'JaneDoe',
     password: 'password456',
     email: 'janedoe@example.com',
+    role: 'user',
     isVerified: false,
     createdAt: new Date(),
     updatedAt: new Date()

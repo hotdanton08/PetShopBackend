@@ -72,9 +72,9 @@ exports.registerUser = async (req, res) => {
   }
 
   try {
-    const { username, password, email } = req.body; // 獲取請求體中的數據
+    const { username, password, email, role } = req.body; // 獲取請求體中的數據
     const hashedPassword = await bcrypt.hash(password, 10); // 密碼加密
-    const user = await User.create({ username, password: hashedPassword, email }); // 創建新用戶
+    const user = await User.create({ username, password: hashedPassword, email, role }); // 創建新用戶
     return successResponse(res, user, 201); // 返回創建的用戶數據
   } catch (error) {
     return errorResponse(res, error.message, 500); // 返回錯誤信息
@@ -92,7 +92,7 @@ exports.loginUser = async (req, res) => {
     }
 
     // 生成 JWT
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
     return successResponse(res, { token }); // 返回 token
   } catch (error) {
     return errorResponse(res, error.message, 500);
@@ -107,13 +107,14 @@ exports.updateUser = async (req, res) => {
   }
 
   try {
-    const { username, password, email } = req.body; // 獲取請求體中的數據
+    const { username, password, email, role } = req.body; // 獲取請求體中的數據
     const user = await User.findByPk(req.params.id); // 根據主鍵查詢用戶
     if (user) {
       // 更新用戶數據
       user.username = username;
       user.password = await bcrypt.hash(password, 10);
       user.email = email;
+      user.role = role;
       await user.save(); // 保存更改
       return successResponse(res, user); // 返回更新後的用戶數據
     } else {
