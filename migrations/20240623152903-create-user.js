@@ -1,3 +1,5 @@
+// migrations/20240623152903-create-user.js
+
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -27,14 +29,6 @@ module.exports = {
       updatedAt: {
         type: Sequelize.DATE
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
     });
   },
   async down(queryInterface, Sequelize) {
