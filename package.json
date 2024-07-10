@@ -26,5 +26,8 @@
     "sequelize": "^6.37.3",
     "sqlite3": "^5.1.7",
     "tedious": "^18.2.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.2"
   }
 }

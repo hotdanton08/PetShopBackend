@@ -1,41 +1,41 @@
 // migrations/20240623152903-create-user.js
 
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable("Users", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       username: {
-        type: Sequelize.STRING(20)
+        type: Sequelize.STRING(20),
       },
       password: {
-        type: Sequelize.STRING(60) // bcrypt 哈希密碼的輸出長度固定為 60 個字符
+        type: Sequelize.STRING(60), // bcrypt 哈希密碼的輸出長度固定為 60 個字符
       },
       email: {
-        type: Sequelize.STRING(50)
+        type: Sequelize.STRING(50),
       },
       role: {
         type: Sequelize.STRING(20),
-        defaultValue: 'guest'
+        defaultValue: "guest",
       },
       isVerified: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
-  }
+    await queryInterface.dropTable("Users");
+  },
 };

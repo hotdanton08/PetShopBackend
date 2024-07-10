@@ -1,22 +1,22 @@
 // seeders/20240624070252-demo-order.js
-'use strict';
+"use strict";
 
 // 數據看起來已經包含所有信息，但缺少 userId
 const orders = [
   {
-    email: 'johndoe@example.com', // 使用 email 來查找 userId
-    total: 300.00,
-    status: 'completed',
+    email: "johndoe@example.com", // 使用 email 來查找 userId
+    total: 300.0,
+    status: "completed",
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
   },
   {
-    email: 'janedoe@example.com', // 使用 email 來查找 userId
-    total: 150.00,
-    status: 'pending',
+    email: "janedoe@example.com", // 使用 email 來查找 userId
+    total: 150.0,
+    status: "pending",
     createdAt: new Date(),
-    updatedAt: new Date()
-  }
+    updatedAt: new Date(),
+  },
 ];
 
 module.exports = {
@@ -24,9 +24,13 @@ module.exports = {
     // 先查找 userId
     const userMap = {};
     for (const order of orders) {
-      const userId = await queryInterface.rawSelect('Users', {
-        where: { email: order.email },
-      }, ['id']);
+      const userId = await queryInterface.rawSelect(
+        "Users",
+        {
+          where: { email: order.email },
+        },
+        ["id"],
+      );
       userMap[order.email] = userId;
     }
 
@@ -37,33 +41,47 @@ module.exports = {
         total: order.total,
         status: order.status,
         createdAt: order.createdAt,
-        updatedAt: order.updatedAt
+        updatedAt: order.updatedAt,
       };
 
       // 檢查訂單是否存在
-      const existingOrder = await queryInterface.rawSelect('Orders', {
-        where: { userId: orderData.userId, total: orderData.total, status: orderData.status },
-      }, ['id']);
+      const existingOrder = await queryInterface.rawSelect(
+        "Orders",
+        {
+          where: {
+            userId: orderData.userId,
+            total: orderData.total,
+            status: orderData.status,
+          },
+        },
+        ["id"],
+      );
 
       if (!existingOrder) {
         // 訂單不存在，插入新數據
-        await queryInterface.bulkInsert('Orders', [orderData], {});
+        await queryInterface.bulkInsert("Orders", [orderData], {});
       } else {
         // 訂單已存在，更新數據
-        await queryInterface.bulkUpdate('Orders', orderData, { id: existingOrder });
+        await queryInterface.bulkUpdate("Orders", orderData, {
+          id: existingOrder,
+        });
       }
     }
   },
 
   down: async (queryInterface, Sequelize) => {
-    const emails = orders.map(order => order.email);
+    const emails = orders.map((order) => order.email);
     const userIds = await queryInterface.sequelize.query(
-      `SELECT id FROM Users WHERE email IN (${emails.map(email => `'${email}'`).join(',')})`
+      `SELECT id FROM Users WHERE email IN (${emails.map((email) => `'${email}'`).join(",")})`,
     );
-    await queryInterface.bulkDelete('Orders', {
-      userId: {
-        [Sequelize.Op.in]: userIds[0].map(user => user.id)
-      }
-    }, {});
-  }
+    await queryInterface.bulkDelete(
+      "Orders",
+      {
+        userId: {
+          [Sequelize.Op.in]: userIds[0].map((user) => user.id),
+        },
+      },
+      {},
+    );
+  },
 };

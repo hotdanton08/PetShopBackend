@@ -15,7 +15,7 @@
 
 ## 簡介
 
-本產品為練習用 Side Project 
+本產品為練習用 Side Project
 
 主要分成前台和後台
 
@@ -29,21 +29,21 @@
 
 1. 克隆專案到本地：
 
-    ```bash
-    git clone https://github.com/hotdanton08/myshop-backend2.git
-    ```
+   ```bash
+   git clone https://github.com/hotdanton08/myshop-backend2.git
+   ```
 
 2. 進入專案目錄：
 
-    ```bash
-    cd myshop-backend2
-    ```
+   ```bash
+   cd myshop-backend2
+   ```
 
 3. 安裝依賴：
 
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
 ## 環境變量
 
@@ -51,3 +51,4 @@
 
 ```bash
 cp .env.example .env
+```

@@ -1,55 +1,55 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('PaymentMethods', {
+    await queryInterface.createTable("PaymentMethods", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users',
-          key: 'id'
-        }
+          model: "Users",
+          key: "id",
+        },
       },
       type: {
-        type: Sequelize.ENUM('cash_on_delivery', 'credit_card'),
-        allowNull: false
+        type: Sequelize.ENUM("cash_on_delivery", "credit_card"),
+        allowNull: false,
       },
       cardNumber: {
-        type: Sequelize.STRING(16)
+        type: Sequelize.STRING(16),
       },
       cardExpiry: {
-        type: Sequelize.STRING(4)
+        type: Sequelize.STRING(4),
       },
       cardCVV: {
-        type: Sequelize.STRING(3)
+        type: Sequelize.STRING(3),
       },
       cardHolderName: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       billingAddress: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
-      }
+        defaultValue: Sequelize.NOW,
+      },
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('PaymentMethods');
-  }
+    await queryInterface.dropTable("PaymentMethods");
+  },
 };
