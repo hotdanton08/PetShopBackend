@@ -20,11 +20,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      description: {
-        type: DataTypes.TEXT,
+      image: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
       price: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      sold: {
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       createdAt: {
@@ -39,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Product",
-    },
+    }
   );
   return Product;
 };

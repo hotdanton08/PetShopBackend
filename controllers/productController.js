@@ -23,7 +23,7 @@ exports.getAllProducts = async (req, res) => {
   try {
     // 查詢並計數
     const { count, rows } = await Product.findAndCountAll({
-      attributes: ["id", "name", "description", "price"], // 指定返回的欄位
+      attributes: ["id", "name", "image", "price", "sold"], // 指定返回的欄位
       where,
       offset,
       limit,
@@ -57,8 +57,8 @@ exports.getProductById = async (req, res) => {
 // 創建新產品
 exports.createProduct = async (req, res) => {
   try {
-    const { name, description, price } = req.body; // 獲取請求體中的數據
-    const product = await Product.create({ name, description, price }); // 創建新產品
+    const { name, image, price, sold } = req.body; // 獲取請求體中的數據
+    const product = await Product.create({ name, image, price, sold }); // 創建新產品
     res.status(201).json(product); // 返回創建的產品數據
   } catch (error) {
     res.status(500).json({ error: error.message }); // 返回錯誤信息
@@ -68,13 +68,14 @@ exports.createProduct = async (req, res) => {
 // 更新產品數據
 exports.updateProduct = async (req, res) => {
   try {
-    const { name, description, price } = req.body; // 獲取請求體中的數據
+    const { name, image, price, sold } = req.body; // 獲取請求體中的數據
     const product = await Product.findByPk(req.params.id); // 根據主鍵查詢產品
     if (product) {
       // 更新產品數據
       product.name = name;
-      product.description = description;
+      product.image = image;
       product.price = price;
+      product.sold = sold;
       await product.save(); // 保存更改
       res.json(product); // 返回更新後的產品數據
     } else {

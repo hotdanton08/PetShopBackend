@@ -4,16 +4,18 @@
 // 定義要插入的產品數據
 const products = [
   {
-    name: "Product A",
-    description: "Description for Product A",
-    price: 100.0,
+    name: "犬用超級營養糧-成犬配方 5kg",
+    image: "assets/images/product_a.jpg",
+    price: 100,
+    sold: 5,
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
-    name: "Product B",
-    description: "Description for Product B",
-    price: 200.0,
+    name: "貓咪護理潔耳液 120ml 專業版",
+    image: "assets/images/product_b.jpg",
+    price: 200,
+    sold: 5,
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -28,7 +30,7 @@ module.exports = {
         {
           where: { name: product.name },
         },
-        ["id"],
+        ["id"]
       );
 
       if (!existingProduct) {
@@ -53,7 +55,7 @@ module.exports = {
           [Sequelize.Op.in]: names,
         },
       },
-      {},
+      {}
     );
   },
 };
