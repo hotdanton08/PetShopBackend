@@ -5,7 +5,7 @@
 const cartItems = [
   {
     cartUserEmail: "johndoe@example.com", // 使用 email 來查找 userId
-    productName: "Product A", // 使用名稱來查找 productId
+    productName: "犬用超級營養糧-成犬配方 5kg", // 使用名稱來查找 productId
     quantity: 2,
     price: 100.0,
     createdAt: new Date(),
@@ -13,7 +13,7 @@ const cartItems = [
   },
   {
     cartUserEmail: "janedoe@example.com", // 使用 email 來查找 userId
-    productName: "Product B", // 使用名稱來查找 productId
+    productName: "貓咪護理潔耳液 120ml 專業版", // 使用名稱來查找 productId
     quantity: 1,
     price: 150.0,
     createdAt: new Date(),
@@ -35,7 +35,7 @@ module.exports = {
           {
             where: { email: cartItem.cartUserEmail },
           },
-          ["id"],
+          ["id"]
         );
         userMap[cartItem.cartUserEmail] = userId;
       }
@@ -46,7 +46,7 @@ module.exports = {
           {
             where: { name: cartItem.productName },
           },
-          ["id"],
+          ["id"]
         );
         productMap[cartItem.productName] = productId;
       }
@@ -60,7 +60,7 @@ module.exports = {
         {
           where: { userId: userId },
         },
-        ["id"],
+        ["id"]
       );
       cartMap[email] = cartId;
     }
@@ -85,7 +85,7 @@ module.exports = {
             productId: cartItemData.productId,
           },
         },
-        ["id"],
+        ["id"]
       );
 
       if (!existingCartItem) {
@@ -106,15 +106,15 @@ module.exports = {
     const productNames = cartItems.map((item) => item.productName);
 
     const userIds = await queryInterface.sequelize.query(
-      `SELECT id FROM Users WHERE email IN (${cartUserEmails.map((email) => `'${email}'`).join(",")})`,
+      `SELECT id FROM Users WHERE email IN (${cartUserEmails.map((email) => `'${email}'`).join(",")})`
     );
 
     const productIds = await queryInterface.sequelize.query(
-      `SELECT id FROM Products WHERE name IN (${productNames.map((name) => `'${name}'`).join(",")})`,
+      `SELECT id FROM Products WHERE name IN (${productNames.map((name) => `'${name}'`).join(",")})`
     );
 
     const cartIds = await queryInterface.sequelize.query(
-      `SELECT id FROM Carts WHERE userId IN (${userIds[0].map((user) => user.id).join(",")})`,
+      `SELECT id FROM Carts WHERE userId IN (${userIds[0].map((user) => user.id).join(",")})`
     );
 
     await queryInterface.bulkDelete(
@@ -127,7 +127,7 @@ module.exports = {
           [Sequelize.Op.in]: productIds[0].map((product) => product.id),
         },
       },
-      {},
+      {}
     );
   },
 };
