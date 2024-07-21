@@ -76,24 +76,24 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    // 刪除這些產品數據
-    const names = products.map((product) => product.name);
-    await queryInterface.bulkDelete(
-      "Products",
-      {
-        name: {
-          [Sequelize.Op.in]: names,
-        },
-      },
-      {}
-    );
+    // 刪除所有產品數據
+    await queryInterface.bulkDelete("Products", null, {});
 
-    // 刪除 public/images 中的圖片
-    for (const product of products) {
-      const targetImagePath = path.join(targetDir, product.image);
-      if (fs.existsSync(targetImagePath)) {
-        fs.unlinkSync(targetImagePath);
+    // 刪除 public/images 中的所有圖片
+    fs.readdir(targetDir, (err, files) => {
+      if (err) {
+        console.error(`無法讀取目錄: ${err}`);
+        return;
       }
-    }
+
+      files.forEach((file) => {
+        const filePath = path.join(targetDir, file);
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error(`無法刪除文件: ${filePath}`);
+          }
+        });
+      });
+    });
   },
 };
