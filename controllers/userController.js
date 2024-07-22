@@ -1,10 +1,10 @@
 // controllers/userController.js
 
-const { User } = require('../models'); // 引入User模型
-const { validationResult } = require('express-validator'); // 引入 validationResult 來處理驗證結果
-const { successResponse, errorResponse } = require('../utils/responseHandler'); // 引入統一處理 response 的 function
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const { User } = require("../models"); // 引入User模型
+const { validationResult } = require("express-validator"); // 引入 validationResult 來處理驗證結果
+const { successResponse, errorResponse } = require("../utils/responseHandler"); // 引入統一處理 response 的 function
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 // 獲取所有用戶，支援分頁、篩選和排序
 exports.getAllUsers = async (req, res) => {
@@ -33,17 +33,17 @@ exports.getAllUsers = async (req, res) => {
   try {
     // 查詢並計數
     const { count, rows } = await User.findAndCountAll({
-      attributes: ['id', 'username', 'email'], // 指定返回的欄位
+      attributes: ["id", "username", "email"], // 指定返回的欄位
       where,
       offset,
       limit,
-      order
+      order,
     });
     res.json({
       total: count, // 總記錄數
       pages: Math.ceil(count / limit), // 總頁數
       currentPage: page, // 當前頁數
-      data: rows // 返回的用戶數據
+      data: rows, // 返回的用戶數據
     });
   } catch (error) {
     res.status(500).json({ error: error.message }); // 返回錯誤信息
@@ -57,7 +57,7 @@ exports.getUserById = async (req, res) => {
     if (user) {
       res.json(user); // 返回用戶數據
     } else {
-      res.status(404).json({ error: 'User not found' }); // 用戶不存在
+      res.status(404).json({ error: "User not found" }); // 用戶不存在
     }
   } catch (error) {
     res.status(500).json({ error: error.message }); // 返回錯誤信息
@@ -72,9 +72,14 @@ exports.registerUser = async (req, res) => {
   }
 
   try {
-    const { username, password, email } = req.body; // 獲取請求體中的數據
+    const { username, password, email, role } = req.body; // 獲取請求體中的數據
     const hashedPassword = await bcrypt.hash(password, 10); // 密碼加密
-    const user = await User.create({ username, password: hashedPassword, email }); // 創建新用戶
+    const user = await User.create({
+      username,
+      password: hashedPassword,
+      email,
+      role,
+    }); // 創建新用戶
     return successResponse(res, user, 201); // 返回創建的用戶數據
   } catch (error) {
     return errorResponse(res, error.message, 500); // 返回錯誤信息
@@ -88,11 +93,15 @@ exports.loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email } }); // 查找用戶
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return errorResponse(res, 'Email或密碼不正確', 401); // 驗證失敗
+      return errorResponse(res, "Email或密碼不正確", 401); // 驗證失敗
     }
 
     // 生成 JWT
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" },
+    );
     return successResponse(res, { token }); // 返回 token
   } catch (error) {
     return errorResponse(res, error.message, 500);
@@ -107,17 +116,18 @@ exports.updateUser = async (req, res) => {
   }
 
   try {
-    const { username, password, email } = req.body; // 獲取請求體中的數據
+    const { username, password, email, role } = req.body; // 獲取請求體中的數據
     const user = await User.findByPk(req.params.id); // 根據主鍵查詢用戶
     if (user) {
       // 更新用戶數據
       user.username = username;
       user.password = await bcrypt.hash(password, 10);
       user.email = email;
+      user.role = role;
       await user.save(); // 保存更改
       return successResponse(res, user); // 返回更新後的用戶數據
     } else {
-      return errorResponse(res, 'User not found', 404); // 用戶不存在
+      return errorResponse(res, "User not found", 404); // 用戶不存在
     }
   } catch (error) {
     return errorResponse(res, error.message, 500); // 返回錯誤信息
@@ -130,9 +140,9 @@ exports.deleteUser = async (req, res) => {
     const user = await User.findByPk(req.params.id); // 根據主鍵查詢用戶
     if (user) {
       await user.destroy(); // 刪除用戶
-      return successResponse(res, 'User deleted'); // 返回成功消息
+      return successResponse(res, "User deleted"); // 返回成功消息
     } else {
-      return errorResponse(res, 'User not found', 404); // 用戶不存在
+      return errorResponse(res, "User not found", 404); // 用戶不存在
     }
   } catch (error) {
     return errorResponse(res, error.message, 500); // 返回錯誤信息

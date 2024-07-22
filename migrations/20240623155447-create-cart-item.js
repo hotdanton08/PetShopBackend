@@ -1,52 +1,52 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('CartItems', {
+    await queryInterface.createTable("CartItems", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       cartId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Carts',
-          key: 'id'
-        }
+          model: "Carts",
+          key: "id",
+        },
       },
       productId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Products',
-          key: 'id'
-        }
+          model: "Products",
+          key: "id",
+        },
       },
       quantity: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
       },
       price: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
-      }
+        defaultValue: Sequelize.NOW,
+      },
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('CartItems');
-  }
+    await queryInterface.dropTable("CartItems");
+  },
 };

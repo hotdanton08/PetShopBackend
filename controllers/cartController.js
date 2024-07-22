@@ -1,4 +1,4 @@
-const { Cart, CartItem } = require('../models'); // 引入Cart和CartItem模型
+const { Cart, CartItem } = require("../models"); // 引入Cart和CartItem模型
 
 // 獲取所有購物車，支援分頁、篩選和排序
 exports.getAllCarts = async (req, res) => {
@@ -24,16 +24,16 @@ exports.getAllCarts = async (req, res) => {
     // 查詢並計數
     const { count, rows } = await Cart.findAndCountAll({
       where,
-      include: ['cartItems'], // 包含購物車項目
+      include: ["cartItems"], // 包含購物車項目
       offset,
       limit,
-      order
+      order,
     });
     res.json({
       total: count, // 總記錄數
       pages: Math.ceil(count / limit), // 總頁數
       currentPage: page, // 當前頁數
-      data: rows // 返回的購物車數據
+      data: rows, // 返回的購物車數據
     });
   } catch (error) {
     res.status(500).json({ error: error.message }); // 返回錯誤信息
@@ -43,11 +43,11 @@ exports.getAllCarts = async (req, res) => {
 // 根據ID獲取單個購物車
 exports.getCartById = async (req, res) => {
   try {
-    const cart = await Cart.findByPk(req.params.id, { include: ['cartItems'] }); // 根據主鍵查詢購物車，並包含購物車項目
+    const cart = await Cart.findByPk(req.params.id, { include: ["cartItems"] }); // 根據主鍵查詢購物車，並包含購物車項目
     if (cart) {
       res.json(cart); // 返回購物車數據
     } else {
-      res.status(404).json({ error: 'Cart not found' }); // 購物車不存在
+      res.status(404).json({ error: "Cart not found" }); // 購物車不存在
     }
   } catch (error) {
     res.status(500).json({ error: error.message }); // 返回錯誤信息
@@ -66,11 +66,11 @@ exports.createCart = async (req, res) => {
           cartId: cart.id,
           productId: item.productId,
           quantity: item.quantity,
-          price: item.price
+          price: item.price,
         });
       }
     }
-    const newCart = await Cart.findByPk(cart.id, { include: ['cartItems'] }); // 查詢並返回新購物車
+    const newCart = await Cart.findByPk(cart.id, { include: ["cartItems"] }); // 查詢並返回新購物車
     res.status(201).json(newCart); // 返回創建的購物車數據
   } catch (error) {
     res.status(500).json({ error: error.message }); // 返回錯誤信息
@@ -93,13 +93,15 @@ exports.updateCart = async (req, res) => {
           cartId: cart.id,
           productId: item.productId,
           quantity: item.quantity,
-          price: item.price
+          price: item.price,
         });
       }
-      const updatedCart = await Cart.findByPk(cart.id, { include: ['cartItems'] }); // 查詢並返回更新後的購物車
+      const updatedCart = await Cart.findByPk(cart.id, {
+        include: ["cartItems"],
+      }); // 查詢並返回更新後的購物車
       res.json(updatedCart); // 返回更新後的購物車數據
     } else {
-      res.status(404).json({ error: 'Cart not found' }); // 購物車不存在
+      res.status(404).json({ error: "Cart not found" }); // 購物車不存在
     }
   } catch (error) {
     res.status(500).json({ error: error.message }); // 返回錯誤信息
@@ -113,9 +115,9 @@ exports.deleteCart = async (req, res) => {
     if (cart) {
       await CartItem.destroy({ where: { cartId: cart.id } }); // 刪除購物車項目
       await cart.destroy(); // 刪除購物車
-      res.json({ message: 'Cart deleted' }); // 返回成功消息
+      res.json({ message: "Cart deleted" }); // 返回成功消息
     } else {
-      res.status(404).json({ error: 'Cart not found' }); // 購物車不存在
+      res.status(404).json({ error: "Cart not found" }); // 購物車不存在
     }
   } catch (error) {
     res.status(500).json({ error: error.message }); // 返回錯誤信息
