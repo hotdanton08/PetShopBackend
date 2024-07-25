@@ -203,7 +203,7 @@ module.exports = {
         if (fs.existsSync(sourceImagePath)) {
           // 複製圖片到 public/images
           fs.copyFileSync(sourceImagePath, targetImagePath);
-          product.image = hashedFileName;
+          product.image = process.env.URL_BACKEND + "/images/" + hashedFileName;
         } else {
           continue;
         }
