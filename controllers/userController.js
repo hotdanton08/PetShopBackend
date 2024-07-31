@@ -118,14 +118,14 @@ exports.updateUser = async (req, res) => {
   }
 
   try {
-    const { username, password, email, role } = req.body; // 獲取請求體中的數據
+    const { email, userName, gender, birthday } = req.body; // 獲取請求體中的數據
     const user = await User.findByPk(req.params.id); // 根據主鍵查詢用戶
     if (user) {
       // 更新用戶數據
-      user.username = username;
-      user.password = await bcrypt.hash(password, 10);
       user.email = email;
-      user.role = role;
+      user.username = userName;
+      user.gender = gender;
+      user.birthday = birthday;
       await user.save(); // 保存更改
       return successResponse(res, user); // 返回更新後的用戶數據
     } else {
