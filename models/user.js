@@ -44,6 +44,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: "user",
       },
+      gender: {
+        type: DataTypes.ENUM("男", "女", "其他"),
+        allowNull: false,
+      },
+      birthday: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
       createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -60,7 +68,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "User",
-    },
+    }
   );
   return User;
 };

@@ -24,6 +24,13 @@ module.exports = {
         type: Sequelize.STRING(20),
         defaultValue: "guest",
       },
+      gender: {
+        type: Sequelize.ENUM("男", "女", "其他"), // 使用 ENUM 類型
+        allowNull: false,
+      },
+      birthday: {
+        type: Sequelize.DATE,
+      },
       isVerified: {
         type: Sequelize.BOOLEAN,
       },

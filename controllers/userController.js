@@ -53,7 +53,9 @@ exports.getAllUsers = async (req, res) => {
 // 根據ID獲取單個用戶
 exports.getUserById = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id); // 根據主鍵查詢用戶
+    const user = await User.findByPk(req.params.id, {
+      attributes: ["username", "email", "gender", "birthday"],
+    }); // 根據主鍵查詢用戶
     if (user) {
       res.json(user); // 返回用戶數據
     } else {
@@ -100,7 +102,7 @@ exports.loginUser = async (req, res) => {
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" },
+      { expiresIn: "1h" }
     );
     return successResponse(res, { token }); // 返回 token
   } catch (error) {
