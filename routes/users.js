@@ -12,28 +12,34 @@ router.get(
   "/",
   authenticateJWT,
   checkRole(["admin"]),
-  userController.getAllUsers,
+  userController.getAllUsers
 ); // 僅限 admin 訪問
 router.get(
   "/:id",
   authenticateJWT,
   checkRole(["admin", "user"]),
-  userController.getUserById,
+  userController.getUserById
 ); // admin 和 user 訪問
 router.post("/", userValidationRules, userController.registerUser); // 註冊不需要權限
 router.post("/login", userController.loginUser); // 登入不需要權限
+router.put(
+  "/changePassword",
+  authenticateJWT,
+  checkRole(["admin", "user"]),
+  userController.changePassword
+);
 router.put(
   "/:id",
   authenticateJWT,
   checkRole(["admin", "user"]),
   userValidationRules,
-  userController.updateUser,
+  userController.updateUser
 ); // admin 和 user 訪問
 router.delete(
   "/:id",
   authenticateJWT,
   checkRole(["admin"]),
-  userController.deleteUser,
+  userController.deleteUser
 ); // 僅限 admin 訪問
 
 module.exports = router;

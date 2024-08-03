@@ -136,6 +136,28 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+exports.changePassword = async (req, res) => {
+  console.log("測試 changePassword");
+  const { password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ error: "Passwords do not match" });
+  }
+
+  try {
+    const user = await User.findByPk(req.user.id); // 從 JWT token 解析後存入 user 來獲取用戶 ID
+    if (user) {
+      user.password = await bcrypt.hash(password, 10);
+      await user.save();
+      return successResponse(res, "Password updated successfully");
+    } else {
+      return errorResponse(res, "User not found", 404);
+    }
+  } catch (error) {
+    return errorResponse(res, error.message, 500);
+  }
+};
+
 // 刪除用戶
 exports.deleteUser = async (req, res) => {
   try {
