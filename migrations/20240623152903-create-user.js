@@ -25,7 +25,7 @@ module.exports = {
         defaultValue: "guest",
       },
       gender: {
-        type: Sequelize.ENUM("男", "女", "其他"), // 使用 ENUM 類型
+        type: Sequelize.ENUM("male", "female", "other"), // 使用 ENUM 類型
         allowNull: false,
       },
       birthday: {
