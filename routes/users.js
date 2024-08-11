@@ -42,4 +42,7 @@ router.delete(
   userController.deleteUser
 ); // 僅限 admin 訪問
 
+// 刷新過期的 token
+router.post("/refresh-token", userController.refreshToken);
+
 module.exports = router;

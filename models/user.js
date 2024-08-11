@@ -46,11 +46,14 @@ module.exports = (sequelize, DataTypes) => {
       },
       gender: {
         type: DataTypes.ENUM("male", "female", "other"),
-        allowNull: false,
       },
       birthday: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
+      },
+      refreshToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -59,10 +62,6 @@ module.exports = (sequelize, DataTypes) => {
       updatedAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
-      },
-      isVerified: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
       },
     },
     {

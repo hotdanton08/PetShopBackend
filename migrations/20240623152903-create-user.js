@@ -26,13 +26,12 @@ module.exports = {
       },
       gender: {
         type: Sequelize.ENUM("male", "female", "other"), // 使用 ENUM 類型
-        allowNull: false,
       },
       birthday: {
         type: Sequelize.DATE,
       },
-      isVerified: {
-        type: Sequelize.BOOLEAN,
+      refreshToken: {
+        type: Sequelize.STRING(255),
       },
       createdAt: {
         type: Sequelize.DATE,

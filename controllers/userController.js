@@ -98,13 +98,25 @@ exports.loginUser = async (req, res) => {
       return errorResponse(res, "Email或密碼不正確", 401); // 驗證失敗
     }
 
-    // 生成 JWT
-    const token = jwt.sign(
+    // 生成 JWT Access Token
+    const accessToken = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "15m" } // 短期有效的 Access Token
     );
-    return successResponse(res, { token }); // 返回 token
+
+    // 生成 Refresh Token
+    const refreshToken = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: "7d" } // 長期有效的 Refresh Token
+    );
+
+    // 將 Refresh Token 保存到數據庫
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    return successResponse(res, { accessToken, refreshToken }); // 返回 token
   } catch (error) {
     return errorResponse(res, error.message, 500);
   }
@@ -170,5 +182,51 @@ exports.deleteUser = async (req, res) => {
     }
   } catch (error) {
     return errorResponse(res, error.message, 500); // 返回錯誤信息
+  }
+};
+
+exports.refreshToken = async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return errorResponse(res, "請提供Refresh Token", 400);
+  }
+
+  try {
+    // 驗證 Refresh Token
+    const user = await User.findOne({ where: { refreshToken } });
+    if (!user) {
+      return errorResponse(res, "無效的 Refresh Token", 403);
+    }
+
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user) => {
+      if (err) {
+        return errorResponse(res, "Refresh Token 過期或無效", 403);
+      }
+
+      // 生成新的 Access Token 和 Refresh Token
+      const accessToken = jwt.sign(
+        { id: user.id, email: user.email, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "15m" }
+      );
+
+      const newRefreshToken = jwt.sign(
+        { id: user.id, email: user.email, role: user.role },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: "7d" }
+      );
+
+      // 更新數據庫中的 Refresh Token
+      user.refreshToken = newRefreshToken;
+      user.save();
+
+      return successResponse(res, {
+        accessToken,
+        refreshToken: newRefreshToken,
+      });
+    });
+  } catch (error) {
+    return errorResponse(res, error.message, 500);
   }
 };
