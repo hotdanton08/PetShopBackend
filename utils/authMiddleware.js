@@ -12,7 +12,7 @@ const authenticateJWT = (req, res, next) => {
   // 驗證 token
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      return res.status(403).json({ message: "令牌無效" }); // 如果 token 無效，返回 403
+      return res.status(403).json({ message: "令牌無效", token: token }); // 如果 token 無效，返回 403
     }
     req.user = user; // 將解碼後的用戶信息存入 req.user
     next(); // 調用下一個中介層或路由處理器
