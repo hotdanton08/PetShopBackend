@@ -138,3 +138,20 @@ exports.deleteCart = async (req, res) => {
     res.status(500).json({ error: error.message }); // 返回錯誤信息
   }
 };
+
+// 刪除特定的購物車項目
+exports.deleteCartItemById = async (req, res) => {
+  try {
+    const cartItemId = req.params.id; // 從請求參數中取得 cartItem 的 ID
+
+    const cartItem = await CartItem.findByPk(cartItemId); // 根據主鍵查詢購物車項目
+    if (cartItem) {
+      await cartItem.destroy(); // 刪除該購物車項目
+      res.json({ message: "Cart item deleted" }); // 返回成功消息
+    } else {
+      res.status(404).json({ error: "Cart item not found" }); // 如果購物車項目不存在，返回 404 錯誤
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message }); // 返回錯誤信息
+  }
+};
