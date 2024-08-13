@@ -1,6 +1,6 @@
-const { Cart, CartItem } = require("../models"); // 引入Cart和CartItem模型
+const { Cart, CartItem, Product } = require("../models");
 
-// 獲取所有購物車，支援分頁、篩選和排序
+// 管理員獲取所有購物車，支援分頁、篩選和排序
 exports.getAllCarts = async (req, res) => {
   const page = parseInt(req.query.page) || 1; // 獲取當前頁數，預設為1
   const limit = parseInt(req.query.limit) || 10; // 獲取每頁顯示的記錄數，預設為10
@@ -40,10 +40,25 @@ exports.getAllCarts = async (req, res) => {
   }
 };
 
-// 根據ID獲取單個購物車
+// 使用者根據ID獲取單個購物車
 exports.getCartById = async (req, res) => {
   try {
-    const cart = await Cart.findByPk(req.params.id, { include: ["cartItems"] }); // 根據主鍵查詢購物車，並包含購物車項目
+    const cart = await Cart.findByPk(req.params.id, {
+      include: [
+        {
+          model: CartItem,
+          as: "cartItems",
+          include: [
+            {
+              model: Product, // 確保這裡已正確包含了 Product
+              as: "product",
+              attributes: ["name", "image", "price"], // 只返回需要的字段
+            },
+          ],
+        },
+      ],
+    });
+
     if (cart) {
       res.json(cart); // 返回購物車數據
     } else {
@@ -118,6 +133,23 @@ exports.deleteCart = async (req, res) => {
       res.json({ message: "Cart deleted" }); // 返回成功消息
     } else {
       res.status(404).json({ error: "Cart not found" }); // 購物車不存在
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message }); // 返回錯誤信息
+  }
+};
+
+// 刪除特定的購物車項目
+exports.deleteCartItemById = async (req, res) => {
+  try {
+    const cartItemId = req.params.id; // 從請求參數中取得 cartItem 的 ID
+
+    const cartItem = await CartItem.findByPk(cartItemId); // 根據主鍵查詢購物車項目
+    if (cartItem) {
+      await cartItem.destroy(); // 刪除該購物車項目
+      res.json({ message: "Cart item deleted" }); // 返回成功消息
+    } else {
+      res.status(404).json({ error: "Cart item not found" }); // 如果購物車項目不存在，返回 404 錯誤
     }
   } catch (error) {
     res.status(500).json({ error: error.message }); // 返回錯誤信息
