@@ -8,6 +8,7 @@ const usersRouter = require("./users");
 const productsRouter = require("./products");
 const ordersRouter = require("./orders");
 const cartsRouter = require("./carts");
+const bannersRouter = require("./banners");
 
 // 定義根路由的 GET 請求處理器
 router.get("/", function (req, res, next) {
@@ -19,5 +20,6 @@ router.use("/users", usersRouter);
 router.use("/products", productsRouter);
 router.use("/orders", ordersRouter);
 router.use("/carts", cartsRouter);
+router.use("/banners", bannersRouter);
 
 module.exports = router; // 導出路由對象，以便在 app.js 中使用

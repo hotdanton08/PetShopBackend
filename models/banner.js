@@ -16,6 +16,12 @@ module.exports = (sequelize, DataTypes) => {
       linkUrl: {
         type: DataTypes.STRING,
       },
+      title: {
+        type: DataTypes.STRING,
+      },
+      subtitle: {
+        type: DataTypes.STRING,
+      },
       createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -28,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Banner",
-    },
+    }
   );
   return Banner;
 };

@@ -16,6 +16,12 @@ module.exports = {
       linkUrl: {
         type: Sequelize.STRING,
       },
+      title: {
+        type: Sequelize.STRING,
+      },
+      subtitle: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
