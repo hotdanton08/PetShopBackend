@@ -1,10 +1,35 @@
+// app.js
+
 // 引入所需模組
+require("dotenv").config();
 var createError = require("http-errors"); // 用於創建錯誤對象的模組
 var express = require("express"); // Express 框架
 var path = require("path"); // 處理和轉換文件路徑的模組
 var cookieParser = require("cookie-parser"); // 解析 Cookie 的中間件
 var logger = require("morgan"); // HTTP 請求日誌中間件
 var cors = require("cors"); // 處理跨域資源共享 (CORS) 的中間件
+
+// 引入 Mongoose 模組
+var mongoose = require("mongoose"); // 用於與 MongoDB 互動的 ODM（對象文檔映射器）
+// 設置 MongoDB 連接 URI
+var mongoDB = process.env.MONGODB_URI;
+
+// 連接到 MongoDB
+mongoose.connect(mongoDB, {});
+
+// 獲取 MongoDB 的默認連接
+var mongoDBConnection = mongoose.connection;
+
+// 綁定連接到錯誤事件（以獲取連接錯誤的通知）
+mongoDBConnection.on(
+  "error",
+  console.error.bind(console, "MongoDB connection error:")
+);
+
+// 綁定成功連接事件
+mongoDBConnection.once("open", function () {
+  console.log("Connected to MongoDB");
+});
 
 // 引入路由文件
 var indexRouter = require("./routes/index");

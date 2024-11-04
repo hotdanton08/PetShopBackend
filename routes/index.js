@@ -6,6 +6,7 @@ var router = express.Router(); // 創建一個路由對象
 // 引入各個子路由
 const usersRouter = require("./users");
 const productsRouter = require("./products");
+const productDetailsRouter = require("./productDetails");
 const ordersRouter = require("./orders");
 const cartsRouter = require("./carts");
 const bannersRouter = require("./banners");
@@ -18,6 +19,7 @@ router.get("/", function (req, res, next) {
 // 使用子路由
 router.use("/users", usersRouter);
 router.use("/products", productsRouter);
+router.use("/productDetails", productDetailsRouter);
 router.use("/orders", ordersRouter);
 router.use("/carts", cartsRouter);
 router.use("/banners", bannersRouter);
