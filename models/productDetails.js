@@ -3,6 +3,7 @@
 const mongoose = require("mongoose");
 
 const productDetailSchema = new mongoose.Schema({
+  productId: { type: Number, unique: true, required: true },
   name: { type: String, required: true }, // 商品名稱
   images: [{ type: String }], // 圖片列表，存儲多個圖片的 URL
   price: { type: Number, required: true }, // 價格

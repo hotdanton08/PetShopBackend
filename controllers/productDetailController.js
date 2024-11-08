@@ -4,11 +4,13 @@ const mongoose = require("mongoose");
 const ProductDetails = require("../models/productDetails");
 
 // 獲取特定產品
-exports.getProductDetailById = async (req, res) => {
+exports.getProductDetailByProductId = async (req, res) => {
   try {
-    console.log("111111");
-    const productDetail = await ProductDetails.findById(req.params.id);
-    console.log("222222");
+    const productId = parseInt(req.params.id, 10);
+    const productDetail = await ProductDetails.findOne({
+      productId: productId,
+    });
+
     if (!productDetail)
       return res.status(404).json({ message: "ProductDetail not found" });
     res.json(productDetail);
