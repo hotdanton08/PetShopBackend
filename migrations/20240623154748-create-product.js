@@ -1,3 +1,5 @@
+// migrations/20240623154748-create-product.js
+
 "use strict";
 
 module.exports = {

@@ -12,10 +12,14 @@ var cors = require("cors"); // 處理跨域資源共享 (CORS) 的中間件
 // 引入 Mongoose 模組
 var mongoose = require("mongoose"); // 用於與 MongoDB 互動的 ODM（對象文檔映射器）
 // 設置 MongoDB 連接 URI
-var mongoDB = process.env.MONGODB_URI;
+const mongoConfig = {
+  url: process.env.MONGO_URL, // 指向伺服器
+  databaseName: process.env.MONGO_DATABASE, // 指定資料庫名稱
+};
+const fullMongoUrl = `${mongoConfig.url}/${mongoConfig.databaseName}`;
 
 // 連接到 MongoDB
-mongoose.connect(mongoDB, {});
+mongoose.connect(fullMongoUrl, {});
 
 // 獲取 MongoDB 的默認連接
 var mongoDBConnection = mongoose.connection;
