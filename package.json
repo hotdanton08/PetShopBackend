@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "migrate-seed:all": "sequelize db:migrate && sequelize db:seed:all && cd config && migrate-mongo up",
+    "undo:migrate-seed:all": "sequelize db:seed:undo:all && sequelize db:migrate:undo:all && cd config && migrate-mongo down"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
