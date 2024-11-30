@@ -89,8 +89,80 @@ const products = [
     updatedAt: new Date(),
   },
   {
-    name: "產品aa",
+    name: "產品11",
     image: "product_11.jpg",
+    price: 200,
+    sold: 5,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    name: "產品12",
+    image: "product_12.jpg",
+    price: 200,
+    sold: 5,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    name: "產品13",
+    image: "product_13.jpg",
+    price: 200,
+    sold: 5,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    name: "產品14",
+    image: "product_14.jpg",
+    price: 200,
+    sold: 5,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    name: "產品15",
+    image: "product_15.jpg",
+    price: 200,
+    sold: 5,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    name: "產品16",
+    image: "product_16.jpg",
+    price: 200,
+    sold: 5,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    name: "產品17",
+    image: "product_17.jpg",
+    price: 200,
+    sold: 5,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    name: "產品18",
+    image: "product_18.jpg",
+    price: 200,
+    sold: 5,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    name: "產品19",
+    image: "product_19.jpg",
+    price: 200,
+    sold: 5,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    name: "產品20",
+    image: "product_20.jpg",
     price: 200,
     sold: 5,
     createdAt: new Date(),
@@ -131,7 +203,7 @@ module.exports = {
         if (fs.existsSync(sourceImagePath)) {
           // 複製圖片到 public/images
           fs.copyFileSync(sourceImagePath, targetImagePath);
-          product.image = hashedFileName;
+          product.image = process.env.URL_BACKEND + "/images/" + hashedFileName;
         } else {
           continue;
         }
@@ -148,24 +220,33 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    // 刪除所有產品數據
-    await queryInterface.bulkDelete("Products", null, {});
-
-    // 刪除 public/images 中的所有圖片
-    fs.readdir(targetDir, (err, files) => {
-      if (err) {
-        console.error(`無法讀取目錄: ${err}`);
-        return;
-      }
-
-      files.forEach((file) => {
-        const filePath = path.join(targetDir, file);
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.error(`無法刪除文件: ${filePath}`);
-          }
-        });
-      });
+    // 從SQL讀取這些產品數據
+    const names = products.map((product) => product.name);
+    const productsToDelete = await queryInterface.select(null, "Products", {
+      where: {
+        name: {
+          [Sequelize.Op.in]: names,
+        },
+      },
     });
+
+    // 刪除產品數據
+    await queryInterface.bulkDelete(
+      "Products",
+      {
+        name: {
+          [Sequelize.Op.in]: names,
+        },
+      },
+      {}
+    );
+
+    // 刪除 public/images 中的圖片
+    for (const product of productsToDelete) {
+      const targetImagePath = path.join(targetDir, product.image);
+      if (fs.existsSync(targetImagePath)) {
+        fs.unlinkSync(targetImagePath);
+      }
+    }
   },
 };

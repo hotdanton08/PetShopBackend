@@ -8,5 +8,6 @@ router.get("/:id", cartController.getCartById); // 根據ID獲取單個購物車
 router.post("/", cartController.createCart); // 創建新購物車
 router.put("/:id", cartController.updateCart); // 更新購物車
 router.delete("/:id", cartController.deleteCart); // 刪除購物車
+router.delete("/cart-item/:id", cartController.deleteCartItemById); // 根據 CartItem 的 ID 刪除特定購物車項目
 
 module.exports = router;

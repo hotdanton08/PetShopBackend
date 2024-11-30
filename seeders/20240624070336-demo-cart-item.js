@@ -7,15 +7,13 @@ const cartItems = [
     cartUserEmail: "johndoe@example.com", // 使用 email 來查找 userId
     productName: "犬用超級營養糧-成犬配方 5kg", // 使用名稱來查找 productId
     quantity: 2,
-    price: 100.0,
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
-    cartUserEmail: "janedoe@example.com", // 使用 email 來查找 userId
+    cartUserEmail: "johndoe@example.com", // 使用 email 來查找 userId
     productName: "貓咪護理潔耳液 120ml 專業版", // 使用名稱來查找 productId
     quantity: 1,
-    price: 150.0,
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -71,7 +69,6 @@ module.exports = {
         cartId: cartMap[cartItem.cartUserEmail],
         productId: productMap[cartItem.productName],
         quantity: cartItem.quantity,
-        price: cartItem.price,
         createdAt: cartItem.createdAt,
         updatedAt: cartItem.updatedAt,
       };

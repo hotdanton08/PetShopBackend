@@ -24,8 +24,14 @@ module.exports = {
         type: Sequelize.STRING(20),
         defaultValue: "guest",
       },
-      isVerified: {
-        type: Sequelize.BOOLEAN,
+      gender: {
+        type: Sequelize.ENUM("male", "female", "other"), // 使用 ENUM 類型
+      },
+      birthday: {
+        type: Sequelize.DATE,
+      },
+      refreshToken: {
+        type: Sequelize.STRING(255),
       },
       createdAt: {
         type: Sequelize.DATE,

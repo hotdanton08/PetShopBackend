@@ -53,7 +53,9 @@ exports.getAllUsers = async (req, res) => {
 // 根據ID獲取單個用戶
 exports.getUserById = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id); // 根據主鍵查詢用戶
+    const user = await User.findByPk(req.params.id, {
+      attributes: ["username", "email", "gender", "birthday"],
+    }); // 根據主鍵查詢用戶
     if (user) {
       res.json(user); // 返回用戶數據
     } else {
@@ -96,13 +98,25 @@ exports.loginUser = async (req, res) => {
       return errorResponse(res, "Email或密碼不正確", 401); // 驗證失敗
     }
 
-    // 生成 JWT
-    const token = jwt.sign(
+    // 生成 JWT Access Token
+    const accessToken = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" },
+      { expiresIn: "15m" } // 短期有效的 Access Token
     );
-    return successResponse(res, { token }); // 返回 token
+
+    // 生成 Refresh Token
+    const refreshToken = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: "7d" } // 長期有效的 Refresh Token
+    );
+
+    // 將 Refresh Token 保存到數據庫
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    return successResponse(res, { accessToken, refreshToken }); // 返回 token
   } catch (error) {
     return errorResponse(res, error.message, 500);
   }
@@ -116,14 +130,14 @@ exports.updateUser = async (req, res) => {
   }
 
   try {
-    const { username, password, email, role } = req.body; // 獲取請求體中的數據
+    const { email, userName, gender, birthday } = req.body; // 獲取請求體中的數據
     const user = await User.findByPk(req.params.id); // 根據主鍵查詢用戶
     if (user) {
       // 更新用戶數據
-      user.username = username;
-      user.password = await bcrypt.hash(password, 10);
       user.email = email;
-      user.role = role;
+      user.username = userName;
+      user.gender = gender;
+      user.birthday = birthday;
       await user.save(); // 保存更改
       return successResponse(res, user); // 返回更新後的用戶數據
     } else {
@@ -131,6 +145,28 @@ exports.updateUser = async (req, res) => {
     }
   } catch (error) {
     return errorResponse(res, error.message, 500); // 返回錯誤信息
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  console.log("測試 changePassword");
+  const { password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ error: "Passwords do not match" });
+  }
+
+  try {
+    const user = await User.findByPk(req.user.id); // 從 JWT token 解析後存入 user 來獲取用戶 ID
+    if (user) {
+      user.password = await bcrypt.hash(password, 10);
+      await user.save();
+      return successResponse(res, "Password updated successfully");
+    } else {
+      return errorResponse(res, "User not found", 404);
+    }
+  } catch (error) {
+    return errorResponse(res, error.message, 500);
   }
 };
 
@@ -146,5 +182,51 @@ exports.deleteUser = async (req, res) => {
     }
   } catch (error) {
     return errorResponse(res, error.message, 500); // 返回錯誤信息
+  }
+};
+
+exports.refreshToken = async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return errorResponse(res, "請提供Refresh Token", 400);
+  }
+
+  try {
+    // 驗證 Refresh Token
+    const user = await User.findOne({ where: { refreshToken } });
+    if (!user) {
+      return errorResponse(res, "無效的 Refresh Token", 403);
+    }
+
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user) => {
+      if (err) {
+        return errorResponse(res, "Refresh Token 過期或無效", 403);
+      }
+
+      // 生成新的 Access Token 和 Refresh Token
+      const accessToken = jwt.sign(
+        { id: user.id, email: user.email, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "15m" }
+      );
+
+      const newRefreshToken = jwt.sign(
+        { id: user.id, email: user.email, role: user.role },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: "7d" }
+      );
+
+      // 更新數據庫中的 Refresh Token
+      user.refreshToken = newRefreshToken;
+      user.save();
+
+      return successResponse(res, {
+        accessToken,
+        refreshToken: newRefreshToken,
+      });
+    });
+  } catch (error) {
+    return errorResponse(res, error.message, 500);
   }
 };

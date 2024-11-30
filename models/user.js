@@ -44,6 +44,17 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: "user",
       },
+      gender: {
+        type: DataTypes.ENUM("male", "female", "other"),
+      },
+      birthday: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
+      refreshToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -52,15 +63,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
-      isVerified: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
     },
     {
       sequelize,
       modelName: "User",
-    },
+    }
   );
   return User;
 };

@@ -11,7 +11,9 @@ const users = [
     password: "password123",
     email: "johndoe@example.com",
     role: "admin",
-    isVerified: true,
+    gender: "male",
+    birthday: new Date(),
+    refreshToken: null,
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -20,7 +22,9 @@ const users = [
     password: "password456",
     email: "janedoe@example.com",
     role: "user",
-    isVerified: false,
+    gender: "female",
+    birthday: new Date(),
+    refreshToken: null,
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -37,7 +41,7 @@ module.exports = {
         {
           where: { email: user.email },
         },
-        ["id"],
+        ["id"]
       );
 
       if (!existingUser) {
@@ -59,7 +63,7 @@ module.exports = {
           [Sequelize.Op.in]: emails,
         },
       },
-      {},
+      {}
     );
   },
 };
